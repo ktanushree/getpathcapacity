@@ -1,9 +1,9 @@
-# Prisma SDWAN (CloudGenix) Get Path Capacity (Preview)
+# Prisma SDWAN (CloudGenix) Get Path Capacity
 This script provides insight into provisioned circuit capacity and offers a comparison with PCM data for the specified time period.
 
 #### Synopsis
-Enables downloading of all the configured sites and it's relavant information such as location, policies to a CSV file.
-
+This scripts queries the provisioned bandwidth and the PCM (Path Capacity Measurement) data for all circuits at the specified site or all sites. 
+It downloads this information into a CSV file. PCM data by default is retrieved for the 24 hours. However, a specific time range can also be provided.  
 
 #### Requirements
 * Active CloudGenix Account
