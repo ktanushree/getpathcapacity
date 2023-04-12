@@ -3,8 +3,8 @@
 CGNX script to retrieve PCM data and Provisioned Capacity
 By default, queries for PCM data over the past 24 hours, unless specified otherwise.
 
-tanushree@cloudgenix.com
 tkamath@paloaltonetworks.com
+Version: 1.0.0b2
 
 """
 import cloudgenix
@@ -150,25 +150,38 @@ def getpcmdata(hours, starttime, endtime, site_id, swi_id, cgx_session):
                 data = seriesdata.get("data", None)[0]
                 datapoints = data.get("datapoints", None)
 
-                dp = pd.DataFrame(datapoints)
-                dp = dp.rename(columns={"value": "Value"})
-                dp = dp.rename(columns={"time": "Time"})
+                if len(datapoints) > 0:
+                    dp = pd.DataFrame(datapoints)
+                    dp = dp.rename(columns={"value": "Value"})
+                    dp = dp.rename(columns={"time": "Time"})
 
-                statdp = dp.Value.describe(include='all')
-                spdict = {}
-                if statdp["count"] > 0:
-                    spdict["Count"] = statdp["count"]
-                    spdict["Mean"] = statdp["mean"]
-                    spdict["Min"] = statdp["min"]
-                    spdict["Max"] = statdp["max"]
-                    spdict["Std"] = statdp["std"]
-                    spdict["25%"] = statdp["25%"]
-                    spdict["50%"] = statdp["50%"]
-                    spdict["75%"] = statdp["75%"]
+                    statdp = dp.Value.describe(include='all')
+                    spdict = {}
+                    if statdp["count"] > 0:
+                        spdict["Count"] = statdp["count"]
+                        spdict["Mean"] = statdp["mean"]
+                        spdict["Min"] = statdp["min"]
+                        spdict["Max"] = statdp["max"]
+                        spdict["Std"] = statdp["std"]
+                        spdict["25%"] = statdp["25%"]
+                        spdict["50%"] = statdp["50%"]
+                        spdict["75%"] = statdp["75%"]
+
+                    else:
+                        print("\tWARN: No {} PCM data retrieved for {}:{}".format(direction, sid_sname[site_id], swi_id))
+                        spdict["Count"] = statdp["count"]
+                        spdict["Mean"] = "-"
+                        spdict["Min"] = "-"
+                        spdict["Max"] = "-"
+                        spdict["Std"] = "-"
+                        spdict["25%"] = "-"
+                        spdict["50%"] = "-"
+                        spdict["75%"] = "-"
 
                 else:
-                    print("WARN: No {} PCM data retrieved for {}:{}".format(direction, sid_sname[site_id], swi_id))
-                    spdict["Count"] = statdp["count"]
+                    spdict = {}
+                    print("\tWARN: No {} PCM data retrieved for {}:{}".format(direction, sid_sname[site_id], swi_id))
+                    spdict["Count"] = 0
                     spdict["Mean"] = "-"
                     spdict["Min"] = "-"
                     spdict["Max"] = "-"
@@ -324,11 +337,11 @@ def go():
 
     provisioned_data = pd.DataFrame()
     for sid in sitelist:
-        print("\t{}".format(sid_sname[sid]))
+        print("{}".format(sid_sname[sid]))
         resp = cgx_session.get.waninterfaces(site_id=sid)
         if resp.cgx_status:
             swilist = resp.cgx_content.get("items", None)
-            print("\t Num WAN Interfaces: {}".format(len(swilist)))
+            print("\tNum WAN Interfaces: {}".format(len(swilist)))
             df = {}
             for swi in swilist:
                 df["site_name"] = sid_sname[sid]
