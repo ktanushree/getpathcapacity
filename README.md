@@ -83,7 +83,8 @@ TanushreeMacBookPro:getpathcapacity tanushreekamath$
 #### Version
 | Version | Build | Changes |
 | ------- | ----- | ------- |
-| **1.0.0** | **b2** | Bug fix - empty datapoints in API response |
+| **1.0.0** | **b3** | Support for pandas 2.0 |
+|           | **b2** | Bug fix - empty datapoints in API response |
 |           | **b1** | Initial Release. |
 
 
