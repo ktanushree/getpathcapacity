@@ -4,8 +4,8 @@ CGNX script to retrieve PCM data and Provisioned Capacity
 By default, queries for PCM data over the past 24 hours, unless specified otherwise.
 
 tkamath@paloaltonetworks.com
-Version: 1.0.0b2
 
+Version: 1.0.0b3
 """
 import cloudgenix
 import pandas as pd
@@ -381,8 +381,8 @@ def go():
                 df["downstream_bw_pcm_25pct"] = ingressdata["25%"]
                 df["downstream_bw_pcm_50pct"] = ingressdata["50%"]
                 df["downstream_bw_pcm_70pct"] = ingressdata["75%"]
-
-                provisioned_data = provisioned_data.append(df, ignore_index=True)
+                dp = pd.DataFrame([df])
+                provisioned_data = pd.concat([provisioned_data, dp], ignore_index=True)
 
                 time.sleep(0.5)
 
